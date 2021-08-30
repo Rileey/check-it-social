@@ -71,7 +71,7 @@ const AuthController = {
                                          name: savedUser.username,
                                          email: savedUser.email,
                                      }, 
-                                     message: 'successful'
+                                     message: 'Successful.'
                                  })
                         }
                     )
