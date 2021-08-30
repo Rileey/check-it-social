@@ -70,8 +70,9 @@ const AuthController = {
                                          id: savedUser._id,
                                          name: savedUser.username,
                                          email: savedUser.email,
+                                         password: savedUser.password
                                      }, 
-                                     message: 'Successful.'
+                                     message: 'Successful'
                                  })
                         }
                     )

@@ -15,14 +15,23 @@ const userSchema = new Schema (
             type: String,
             required: true,
             lowercase: true,
-            validate: [isEmail, 'Enter a valide email']
+            validate: [isEmail, 'Enter a valid email']
         },
         password: {
             type: String,
             required: true
+        },
+        createdAt: { 
+            type: Date, 
+            default: Date.now
+        },
+        isDeleted: {
+            type: Boolean,
+            default: false
         }
     },
     {timestamps: true}
+    
 )
 
 export const User = model('user', userSchema);
