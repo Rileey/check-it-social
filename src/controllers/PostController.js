@@ -38,7 +38,7 @@ const PostController = {
         Post.find({})
         .populate({
             path: "_creator",
-            select: "username createdAt -_id"
+            select: "username createdAt _id"
         })
         .populate({
             path: "_comments",
@@ -55,7 +55,109 @@ const PostController = {
                 message: err.toString()
             });
         });
+    },
+
+
+    getPost: async (req, res) => {
+        try{
+        const { postId } = req.params;
+        const getOnePost = await Post.findById({ _id: postId})
+        .populate({
+            path: "_creator",
+            select: "username createdAt _id"
+        })
+
+        if (getOnePost !== null) {
+            res.status(200).json({getOnePost }).status('success');
+          } else {
+             res
+               .status(404)
+               .send({ message: `there are no posts with this id` })
+               .end();
+        }
+        } catch (err) {
+          console.log(err)
+          res.status(400).send({ message: `Invalid post id` });
+        }
+
+    },
+
+
+    updatePostText: async(req, res) => {
+
+        try {
+            
+        const { postId } = req.params
+        const text =  req.body
+        await Post.findOneAndUpdate({ _id: postId }, text, {new: true},
+            (err, result) => {
+                if (err){
+                    res.status(404).send({
+                        message: `there are no posts to update`
+                    })
+                    throw err;
+                }
+                res.status(200).send({
+                    message: `post with id: ${postId} has been updated`,
+                })
+            })
+        } catch (err) {
+            res.status(400).send({
+                message: `Invalid post  id`
+            })
+        }
+    },
+
+
+    updatePostLink: async(req, res) => {
+
+        try {
+            
+        const { postId } = req.params
+        const link =  req.body
+        await Post.findOneAndUpdate({ _id: postId }, link, {new: true},
+            (err, result) => {
+                if (err){
+                    res.status(404).send({
+                        message: `there are no posts to update`
+                    })
+                    throw err;
+                }
+                res.status(200).send({
+                    message: `post with id: ${postId} has been updated`,
+                })
+            })
+        } catch (err) {
+            res.status(400).send({
+                message: `Invalid post  id`
+            })
+        }
+    },
+
+    deletePost: (req, res) => {
+        try {
+
+            const { postId } = req.params
+            const deletePost = Post.find({ _id: postId})
+            .deleteOne((err) => {
+                if (err){
+                    res.status(404).send({
+                        message: `the post with this id doesn't exist`
+                    })
+                    throw err;
+                } res.status(200).send({
+                    message: `deleted post with the id: ${postId}`
+                })
+                
+            })
+
+        } catch (err) {
+            res.status(400).send({
+                message: `Invalid post  id`
+            })
+        }
     }
+
 };
 
 export default PostController

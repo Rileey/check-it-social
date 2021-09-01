@@ -47,8 +47,6 @@ const AuthController = {
             if (hash) {
                 const newUser = new User({ username, email, password: hash})
                 const savedUser = await newUser.save();
-                // await Checkout.create({user: savedUser._id, cart: []});
-                // await Favorite.create({ user: savedUser._id, dishes: [] });
                 
                 if (savedUser) {
                     
@@ -118,7 +116,7 @@ const AuthController = {
             
         } catch (err) {
             console.log(err.message)
-            // return res.status(500).json({message: 'server error'})
+            return res.status(500).json({message: 'server error'})
         }  
     },
 

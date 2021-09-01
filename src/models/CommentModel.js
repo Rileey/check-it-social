@@ -20,7 +20,8 @@ const commentSchema = new Schema ({
         ref: "user"
     }, 
     _post: {
-        type: Schema.ObjectId, ref: "Post"
+        type: Schema.Types.ObjectId,
+        ref: "Post"
     }
 },
 {timestamps: true}
@@ -29,7 +30,7 @@ const commentSchema = new Schema ({
 const autoPopulateCreator = function(next){
     this.populate({
         path: "_creator",
-        select: "username createdAt -_id"
+        select: "username createdAt _id"
     });
     next();
 };
