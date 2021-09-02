@@ -16,17 +16,24 @@ router.route('/login').post(AuthController.login);
 router.route('/users').get(ProfileController.getAll);
 router.route('/user').post(ProfileController.createProfile);
 router.route('/user/:profileId').get(ProfileController.getProfile)
+.delete(ProfileController.deleteProfile)
 .patch(ProfileController.updateProfile);
+router.route('/user/:profileId/follow').put(ProfileController.followProfile);
+router.route('/user/:profileId/unfollow').put(ProfileController.unfollowProfile);
 
 
 //posts routes
 router.route('/post').post(PostController.makePost)
 router.route('/posts').get(PostController.getAll);
-router.route('/post/:postId').get(PostController.getPost)
+router.route('/posts/:postId').get(PostController.getPost)
 .delete(PostController.deletePost).patch(PostController.updatePostText).patch(PostController.updatePostLink)
 
 //comment routes
 router.route('/comment').post(CommentController.post);
+router.route('/comments').get(CommentController.getAll);
+router.route('/comments/:commentId').patch(CommentController.updateComment)
+.get(CommentController.getComment)
+.delete(CommentController.deleteComment);
 export default router;
 
 

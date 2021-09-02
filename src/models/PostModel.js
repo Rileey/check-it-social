@@ -2,12 +2,12 @@ import mongoose from 'mongoose';
 const {Schema, model} = mongoose
 
 const postSchema = new Schema ({
-    title: {
+    text:{
         type: String,
-        required: true
+        max: 150
     },
     link: String,
-    text: String,
+    image: String,
     isDeleted: {
         type: Boolean, 
         default:false
@@ -18,7 +18,7 @@ const postSchema = new Schema ({
     },
     _creator: {
         type: Schema.Types.ObjectId, 
-        ref: 'user',
+        ref: 'Profile',
     }, 
     _comments: [{
         type: Schema.Types.ObjectId, 

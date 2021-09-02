@@ -3,33 +3,42 @@ import mongoose from "mongoose";
 
 
 const PostController = {
-    makePost: (req, res) => {
+    makePost: async (req, res) => {
         const {
-            title,
             text,
             link,
-            userId,
+            image,
+            profileId,
         } = req.body;
 
         const post = new Post({
-            title,
             text,
             link,
-            _creator: userId,
+            image,
+            _creator: profileId,
         });
 
-        const newPost = post.save();
+        try{
+            const newPost = await post.save();
+            res.status(200).json({
+                messgae: "Success",
+                data: newPost
+            });
+        } catch (err) {
+            res.status(500).json(err.toString())
+        }
+        
 
-        newPost.then((np) => {
-            return res.status(200).json({
-                message: "Success",
-                data: np
-            });
-        }).catch((err) => {
-            return res.status(500).json({
-                message: err
-            });
-        });
+        // newPost.then((np) => {
+        //     return res.status(200).json({
+        //         message: "Success",
+        //         data: np
+        //     });
+        // }).catch((err) => {
+        //     return res.status(500).json({
+        //         message: err
+        //     });
+        // });
 
     },
 
@@ -38,7 +47,7 @@ const PostController = {
         Post.find({})
         .populate({
             path: "_creator",
-            select: "username createdAt _id"
+            select: "name createdAt _id"
         })
         .populate({
             path: "_comments",
@@ -73,7 +82,6 @@ const PostController = {
              res
                .status(404)
                .send({ message: `there are no posts with this id` })
-               .end();
         }
         } catch (err) {
           console.log(err)

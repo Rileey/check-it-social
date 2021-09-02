@@ -108,6 +108,77 @@ const ProfileController = {
             });
         });
     },
+
+    deleteProfile: (req, res) => {
+        try {
+            
+            const { profileId } = req.params
+            const deleteProfile = Profile.find({ _id: profileId})
+            .deleteOne((err) => {
+                if (err){
+                    res.status(404).send({
+                        message: `the profile with this id doesn't exist`
+                    })
+                    throw err;
+                } res.status(200).send({
+                    message: `deleted post with the id: ${profileId}`
+                })
+
+            })
+
+        } catch (err) {
+            res.status(400).send({
+                message: `Invalid post id`
+            })
+        }
+    },
+
+
+    followProfile: async (req, res) => {
+        const { id } = req.body;
+        const { profileId } = req.params;
+        if ( profileId !== id ){
+            try {
+                const user = await Profile.findById(profileId)
+                const currentUser = await Profile.findById(id)
+                if (!user.followers.includes(id)){
+                    await user.updateOne({ $push: {followers: id}})
+                    await currentUser.updateOne({ $push: {following: profileId}})
+                    res.status(200).json(`user has been followed`);
+                } else {
+                    res.status(404).json(`you already follow this user`)
+                }
+            } catch (err) {
+                res.status(500).json(err.toString())
+            }
+        } else {
+            res.status(404).json(`you can't follow yourself`);
+        }
+    },
+
+
+    unfollowProfile: async (req, res) => {
+        const { id } = req.body;
+        const { profileId } = req.params;
+        if ( profileId !== id ){
+            try {
+                const user = await Profile.findById(profileId)
+                const currentUser = await Profile.findById(id)
+                if (user.followers.includes(id)){
+                    await user.updateOne({ $pull: {followers: id}})
+                    await currentUser.updateOne({ $pull: {following: profileId}})
+                    res.status(200).json(`user has been unfollowed`);
+                } else {
+                    res.status(404).json(`you do not follow this user`)
+                }
+            } catch (err) {
+                res.status(500).json(err.toString())
+            }
+        } else {
+            res.status(404).json(`you can't unfollow yourself`);
+        }
+    }
+
 }
 
 export default ProfileController;

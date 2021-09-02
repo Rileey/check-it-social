@@ -2,11 +2,12 @@ import mongoose from 'mongoose';
 const {Schema, model} = mongoose
 
 const commentSchema = new Schema ({
-    link: String,
     text: {
         type: String,
         required: true
     },
+    link: String,
+    image: String,
     isDeleted: {
         type: Boolean, 
         default:false
@@ -17,7 +18,7 @@ const commentSchema = new Schema ({
     },
     _creator: {
         type: Schema.Types.ObjectId, 
-        ref: "user"
+        ref: "Profile"
     }, 
     _post: {
         type: Schema.Types.ObjectId,
@@ -27,14 +28,5 @@ const commentSchema = new Schema ({
 {timestamps: true}
 );
 
-const autoPopulateCreator = function(next){
-    this.populate({
-        path: "_creator",
-        select: "username createdAt _id"
-    });
-    next();
-};
-
-commentSchema.pre("find", autoPopulateCreator);
 
 export const Comment = model('Comment', commentSchema);
