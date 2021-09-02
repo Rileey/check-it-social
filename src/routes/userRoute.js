@@ -13,9 +13,9 @@ router.route('/login').post(AuthController.login);
 
 
 //profile routes
-router.route('/users').get(ProfileController.getAll);
 router.route('/user').post(ProfileController.createProfile);
-router.route('/user/:profileId').get(ProfileController.getProfile)
+router.route('/users').get(ProfileController.getAll);
+router.route('/users/:profileId').get(ProfileController.getProfile)
 .delete(ProfileController.deleteProfile)
 .patch(ProfileController.updateProfile);
 router.route('/user/:profileId/follow').put(ProfileController.followProfile);
