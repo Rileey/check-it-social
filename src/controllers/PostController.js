@@ -1,5 +1,5 @@
-import {Post} from "../models/PostModel.js"
-import mongoose from "mongoose";
+import { Post } from "../models/PostModel.js"
+import { Profile } from "../models/ProfileModel.js";
 
 
 const PostController = {
@@ -27,21 +27,33 @@ const PostController = {
         } catch (err) {
             res.status(500).json(err.toString())
         }
-        
-
-        // newPost.then((np) => {
-        //     return res.status(200).json({
-        //         message: "Success",
-        //         data: np
-        //     });
-        // }).catch((err) => {
-        //     return res.status(500).json({
-        //         message: err
-        //     });
-        // });
 
     },
 
+
+    getTimeline: async(req, res) => {
+        const { profileId } = req.params;
+        try {
+            //get a user by Id
+            const user = await Profile.findById(profileId);
+
+            // Get posts by user
+            const posts = await Post.find({ _creator: user._id });
+
+            // Get posts by users you follow
+            const communityPost = await Promise.all(
+                user.following.map((communityId) => {
+                    return Post.find({_creator: communityId});
+                })
+            );
+            res.status(200).json({data: posts.concat(...communityPost)})
+        } catch (err) {
+            res.status(500).json({
+                message: err.toString
+            })
+        }
+
+    },
 
     getAll: (req, res) => {
         Post.find({})
@@ -75,7 +87,7 @@ const PostController = {
             path: "_creator",
             select: "username createdAt _id"
         })
-
+        
         if (getOnePost !== null) {
             res.status(200).json({getOnePost }).status('success');
           } else {
@@ -139,6 +151,27 @@ const PostController = {
             res.status(400).send({
                 message: `Invalid post  id`
             })
+        }
+    },
+
+    likePost: async (req, res) => {
+        const { postId } = req.params;
+        const { profileId } = req.body;
+
+        try {
+            const post = await Post.findById(postId);
+            if (!post.likes.includes(profileId)) {
+                await post.updateOne({ $push: {likes: profileId}})
+                res.status(200).json({
+                    Message: `The post has been liked`,
+                    data: post
+                });
+            } else {
+                await post.updateOne({ $pull: {likes: profileId}})
+                res.status(200).json(`The post has been disliked`);
+            }
+        } catch (err) {
+            res.status(500).json(err)
         }
     },
 
