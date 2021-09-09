@@ -1,5 +1,5 @@
 import { Post } from "../models/PostModel.js"
-import { Profile } from "../models/ProfileModel.js";
+import { User } from "../models/UserModel.js";
 
 
 const PostController = {
@@ -35,18 +35,16 @@ const PostController = {
         const { profileId } = req.params;
         try {
             //get a user by Id
-            const user = await Profile.findById(profileId);
-
+            const user = await User.findById(profileId);
             // Get posts by user
             const posts = await Post.find({ _creator: user._id });
-
             // Get posts by users you follow
             const communityPost = await Promise.all(
                 user.following.map((communityId) => {
                     return Post.find({_creator: communityId});
                 })
             );
-            res.status(200).json({data: posts.concat(...communityPost)})
+            res.status(200).json(posts.concat(...communityPost))
         } catch (err) {
             res.status(500).json({
                 message: err.toString
@@ -76,6 +74,18 @@ const PostController = {
                 message: err.toString()
             });
         });
+    },
+
+
+    getUsersPost: async (req, res) => {
+        const { name } = req.params
+        try{
+            const profile = await User.findOne({name : name})
+            const posts = await Post.find({ _creator: profile._id }) 
+            res.status(200).json(posts)
+        } catch (err) {
+            res.status(500).json(err);
+        }
     },
 
 

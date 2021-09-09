@@ -1,41 +1,41 @@
-import {Profile} from '../models/ProfileModel.js';
+import {User} from '../models/UserModel.js';
 
 const ProfileController = {
 
-    createProfile: (req, res) => {
-        const { 
-            name, 
-            profilePicture, 
-            coverPicture, 
-            description, 
-            city,
-            relationship,
-            userId,
-        } = req.body;
+//     createProfile: (req, res) => {
+//         const { 
+//             name, 
+//             profilePicture, 
+//             coverPicture, 
+//             description, 
+//             city,
+//             relationship,
+//             // userId,
+//         } = req.body;
 
-        const profile = new Profile({
-            name,
-            profilePicture,
-            coverPicture,
-            description,
-            city,
-            relationship,
-            _user: userId,
-        });
+//         const profile = new User({
+//             name,
+//             profilePicture,
+//             coverPicture,
+//             description,
+//             city,
+//             relationship,
+//             // _user: userId,
+//         });
 
-        const newProfile = profile.save()
+//         const newProfile = profile.save()
 
-        newProfile.then((np) => {
-            return res.status(200).json({
-                message: "Success",
-                data: np
-            });
-        }).catch((err) => {
-            return res.status(500).json({
-                message: err
-            });
-        });
-    },
+//         newProfile.then((np) => {
+//             return res.status(200).json({
+//                 message: "Success",
+//                 data: np
+//             });
+//         }).catch((err) => {
+//             return res.status(500).json({
+//                 message: err
+//             });
+//         });
+//     },
 
 
     updateProfile: async (req, res) => {
@@ -44,7 +44,7 @@ const ProfileController = {
             const { profileId } = req.params
             const profilebody = req.body
 
-            await Profile.findOneAndUpdate({ _id: profileId}, 
+            await User.findOneAndUpdate({ _id: profileId}, 
                 profilebody, {new: true},
                 
                 (err, result) => {
@@ -68,16 +68,20 @@ const ProfileController = {
     },
 
     getProfile: async (req, res) => {
+        const { profileId } = req.query;
+        const { name } = req.query;
         try {
-            const { profileId } = req.params;
-            const getOneUser =  await Profile.findById({ _id: profileId})
+            // const { id } = req.params;
+            const profile =  profileId 
+            ? await User.findById(profileId)
+            : await User.findOne({ name : name })
             .populate({
                 path: "_user",
                 select: "username createdAt _id"
             })
 
-            if (getOneUser !== null) {
-                res.status(200).json({getOneUser}).status("success")
+            if (profile !== null) {
+                res.status(200).json({profile}).status("success")
             } else {
                 res
                .status(404)
@@ -92,11 +96,11 @@ const ProfileController = {
 
 
     getAll: (req, res) => {
-        Profile.find({})
-        .populate({
-            path: "_user",
-            select: "username createdAt _id"
-        })
+        User.find({})
+        // .populate({
+        //     path: "_User",
+        //     select: "username createdAt _id"
+        // })
         .then((profiles) => {
             return res.status(200).json({
                 Success: true,
@@ -113,7 +117,7 @@ const ProfileController = {
         try {
             
             const { profileId } = req.params
-            const deleteProfile = Profile.find({ _id: profileId})
+            const deleteProfile = User.find({ _id: profileId})
             .deleteOne((err) => {
                 if (err){
                     res.status(404).send({
@@ -139,8 +143,8 @@ const ProfileController = {
         const { profileId } = req.params;
         if ( profileId !== id ){
             try {
-                const user = await Profile.findById(profileId)
-                const currentUser = await Profile.findById(id)
+                const user = await User.findById(profileId)
+                const currentUser = await User.findById(id)
                 if (!user.followers.includes(id)){
                     await user.updateOne({ $push: {followers: id}})
                     await currentUser.updateOne({ $push: {following: profileId}})
@@ -162,8 +166,8 @@ const ProfileController = {
         const { profileId } = req.params;
         if ( profileId !== id ){
             try {
-                const user = await Profile.findById(profileId)
-                const currentUser = await Profile.findById(id)
+                const user = await User.findById(profileId)
+                const currentUser = await User.findById(id)
                 if (user.followers.includes(id)){
                     await user.updateOne({ $pull: {followers: id}})
                     await currentUser.updateOne({ $pull: {following: profileId}})

@@ -13,17 +13,17 @@ dotenv.config()
 
 const AuthController = {
     signup: async (req, res) => {
-        const {username, email, password} = req.body 
+        const {name, email, password} = req.body 
         console.log(req.body)
 
         try {
-            if(!username || !email || !password) {
+            if(!name || !email || !password) {
                 return res
                 .status(400)
                 .json({message: 'All fields must be provided'})
             }
 
-            if(username.length < 5){
+            if(name.length < 5){
                 return res.status(400).json({message: "Username must be 5 characters or more"})
             }    
 
@@ -45,7 +45,7 @@ const AuthController = {
             const hash = bcrypt.hashSync(password, salt)
 
             if (hash) {
-                const newUser = new User({ username, email, password: hash})
+                const newUser = new User({ name, email, password: hash})
                 const savedUser = await newUser.save();
                 
                 if (savedUser) {
@@ -66,7 +66,7 @@ const AuthController = {
                                      data: {
                                          token: `Bearer ${token}`,
                                          id: savedUser._id,
-                                         name: savedUser.username,
+                                         name: savedUser.name,
                                          email: savedUser.email,
                                          password: savedUser.password
                                      }, 

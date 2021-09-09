@@ -7,7 +7,7 @@ const { isEmail } = validator
 
 const userSchema = new Schema (
     {
-        username: {
+        name: {
             type: String,
             required: true,
         },
@@ -25,13 +25,33 @@ const userSchema = new Schema (
             type: Date, 
             default: Date.now
         },
-        isDeleted: {
+        profilePicture: {       
+            type: String,
+        },
+        coverPicture: {     
+            type: String,
+            default: ""
+        },
+        description: {
+            type: String,
+            max: 50
+        },
+        followers: Array,
+        following: Array,
+        isAdmin: {
             type: Boolean,
             default: false
+        },
+        city: {
+            type: String
+        },
+        relationship: {
+            type: Number,
+            enum: [1, 2, 3],
         }
     },
     {timestamps: true}
     
 )
 
-export const User = model('user', userSchema);
+export const User = model('User', userSchema);

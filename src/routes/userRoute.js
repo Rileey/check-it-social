@@ -12,19 +12,20 @@ router.route('/register').post(AuthController.signup);
 router.route('/login').post(AuthController.login);
 
 
-//profile routes
-router.route('/user').post(ProfileController.createProfile);
-router.route('/users').get(ProfileController.getAll);
-router.route('/users/:profileId').get(ProfileController.getProfile)
+//user routes
+// router.route('/profile').post(ProfileController.createProfile);
+router.route('/profiles').get(ProfileController.getAll);
+router.route('/profile').get(ProfileController.getProfile)
 .delete(ProfileController.deleteProfile)
 .patch(ProfileController.updateProfile);
-router.route('/users/:profileId/follow').put(ProfileController.followProfile);
-router.route('/users/:profileId/unfollow').put(ProfileController.unfollowProfile);
+router.route('/profiles/:profileId/follow').put(ProfileController.followProfile);
+router.route('/profiles/:profileId/unfollow').put(ProfileController.unfollowProfile);
 
 
 //posts routes
 router.route('/post').post(PostController.makePost)
 router.route('/posts').get(PostController.getAll)
+router.route('/posts/:name').get(PostController.getUsersPost);
 router.route('/posts/timeline/:profileId').get(PostController.getTimeline);
 router.route('/posts/:postId').get(PostController.getPost)
 .delete(PostController.deletePost).patch(PostController.updatePostText).patch(PostController.updatePostLink)

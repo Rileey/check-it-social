@@ -7,14 +7,13 @@ const profileSchema = new Schema (
     {
         _user: {
             type: Schema.Types.ObjectId,
-            ref: 'user'
+            ref: 'User'
         },
         name: {
             type: String
         },
         profilePicture: {       
             type: String,
-            default: ""
         },
         coverPicture: {     
             type: String,

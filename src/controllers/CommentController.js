@@ -20,8 +20,7 @@ const CommentController = {
             _post: postId,
         });
 
-        const newComment = comment.save();
-        newComment.then((nc) => {
+        comment.save().then((nc) => {
             Post.findByIdAndUpdate(
                 postId,
                 { $push: {"_comments": nc._id} }
@@ -32,14 +31,10 @@ const CommentController = {
                         existingPost,
                     });
                 }).catch((err) => {
-                    res.status(500).json({
-                        message: err.toSring(),
+                     res.status(500).json({
+                        message: err
                     });
                 });
-            res.status(200).json({
-                success: true,
-                data: savedUser,
-            });
         }).catch((err) => {
             res.status(500).json({
                 message: err
