@@ -19,7 +19,7 @@ const postSchema = new Schema ({
     _creator: {
         type: Schema.Types.ObjectId, 
         ref: 'User',
-    }, 
+    },
     _comments: [{
         type: Schema.Types.ObjectId, 
         ref: "Comment"

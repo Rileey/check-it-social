@@ -3,9 +3,9 @@ import mongoose from 'mongoose';
 
 const {Schema, model} = mongoose
 
-const profileSchema = new Schema (
+const communitySchema = new Schema (
     {
-        _user: {
+        _creator: {
             type: Schema.Types.ObjectId,
             ref: 'User'
         },
@@ -23,21 +23,18 @@ const profileSchema = new Schema (
             type: String,
             max: 50
         },
+        createdAt: {
+            type: Date,
+            default: Date.now
+        },
+        likes: [],
+        _post: {
+            type: Schema.Types.ObjectId, 
+            ref: 'Post',
+        },  
         followers: Array,
-        following: Array,
-        isAdmin: {
-            type: Boolean,
-            default: false
-        },
-        city: {
-            type: String
-        },
-        relationship: {
-            type: Number,
-            enum: [1, 2, 3],
-        }
     },
     {timestamps: true}
 )
 
-export const Profile = model('Profile', profileSchema);
+export const Community = model('Community', communitySchema);

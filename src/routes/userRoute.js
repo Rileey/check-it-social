@@ -6,6 +6,7 @@ import AuthController from '../controllers/AuthController.js';
 import PostController from '../controllers/PostController.js';
 import CommentController from '../controllers/CommentController.js';
 import ProfileController from '../controllers/ProfileController.js';
+import CommunityController from '../controllers/CommunityController.js';
 
 //auth routes
 router.route('/register').post(AuthController.signup);
@@ -20,6 +21,18 @@ router.route('/profile').get(ProfileController.getProfile)
 .patch(ProfileController.updateProfile);
 router.route('/profiles/:profileId/follow').put(ProfileController.followProfile);
 router.route('/profiles/:profileId/unfollow').put(ProfileController.unfollowProfile);
+router.route('/profiles/friends/:profileId').get(ProfileController.getFriends);
+
+//community routes
+router.route('/communities').get(CommunityController.getAllCommunities);
+router.route('/community').get(CommunityController.getCommunity)
+.delete(CommunityController.deleteCommunity)
+.put(CommunityController.updateCommunity)
+.post(CommunityController.createCommunity)
+router.route('/communities/:communityId/follow').put(CommunityController.followCommunity);
+router.route('/communities/:communityId/unfollow').put(CommunityController.unfollowCommunity);
+router.route('/communities/follow/:communityId').get(CommunityController.getFollowers)
+router.route('/community/timeline/:communityId').get(CommunityController.getCommunityTimeline)
 
 
 //posts routes
@@ -39,6 +52,7 @@ router.route('/comments').get(CommentController.getAll);
 router.route('/comments/:commentId').patch(CommentController.updateComment)
 .get(CommentController.getComment)
 .delete(CommentController.deleteComment);
+
 
 
 

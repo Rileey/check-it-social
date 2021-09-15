@@ -103,12 +103,7 @@ const AuthController = {
           
             if(user) {
                 if(bcrypt.compareSync(password, user.password)) {
-                    return res.status(200).json({
-                        _id: user._id,
-                        name: user.name,
-                        email: user.email,
-                        token: 'Bearer ' + generateToken(user)
-                    })
+                    return res.status(200).json(user)
                 }
             }
            

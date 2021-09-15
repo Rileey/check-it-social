@@ -39,9 +39,9 @@ const ProfileController = {
 
 
     updateProfile: async (req, res) => {
-        
+        const { profileId } = req.query;
         try {
-            const { profileId } = req.params
+            
             const profilebody = req.body
 
             await User.findOneAndUpdate({ _id: profileId}, 
@@ -94,6 +94,25 @@ const ProfileController = {
         }
     },
 
+    getFriends : async (req, res) => {
+        const { profileId } = req.params;
+        try {
+            const profile = await User.findById(profileId)
+            const friends = await Promise.all(
+                profile.following.map(followerId => {
+                    return User.findById(followerId)
+                })
+            )
+            let friendList = [];
+            friends.map(friend => {
+                const { _id, name, profilePicture } = friend
+                friendList.push({ _id, name, profilePicture })
+            })
+            res.status(200).json(friendList)
+        } catch (error) {
+            res.status(500).json(error)
+        }
+    },
 
     getAll: (req, res) => {
         User.find({})

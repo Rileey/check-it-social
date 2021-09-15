@@ -21,7 +21,7 @@ const PostController = {
         try{
             const newPost = await post.save();
             res.status(200).json({
-                messgae: "Success",
+                message: "Success",
                 data: newPost
             });
         } catch (err) {
