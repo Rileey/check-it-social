@@ -9,11 +9,12 @@ dotenv.config()
 const databaseConnection = {
     getConnect: () => {
         mongoose
-          .connect("mongodb://localhost:27017/test", {
+          .connect(`${process.env.MONGODB_URI}`, { 
+            
             useNewUrlParser: true,
             useUnifiedTopology: true,
           })
-          .then(() => console.log('connected successfully'))
+          .then(() => console.log('connected successfully! Database name: Check-it'))
           .catch((err) => console.log(err.message));
     }
 }
