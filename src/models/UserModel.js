@@ -38,6 +38,7 @@ const userSchema = new Schema (
         },
         followers: Array,
         following: Array,
+        communitiesFollowed: Array,
         isAdmin: {
             type: Boolean,
             default: false

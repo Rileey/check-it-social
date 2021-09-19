@@ -120,7 +120,7 @@ const CommunityController = {
         try {
             const community = await Community.findById(communityId)
             const followers = await Promise.all(
-                profile.followers.map(followerId => {
+                community.followers.map(followerId => {
                     return User.findById(followerId)
                 })
             )
@@ -156,8 +156,8 @@ const CommunityController = {
     deleteCommunity: (req, res) => {
         try {
             
-            const { communityId } = req.params
-            const deleteCommunity = User.find({ _id: communityId})
+            const { communityId } = req.query
+            const deleteCommunity = Community.find({ _id: communityId})
             .deleteOne((err) => {
                 if (err){
                     res.status(404).send({
@@ -183,11 +183,11 @@ const CommunityController = {
         const { communityId } = req.params;
         if ( communityId !== id ){
             try {
-                const user = await Community.findById(communityId)
+                const community = await Community.findById(communityId)
                 const currentUser = await User.findById(id)
-                if (!user.followers.includes(id)){
-                    await user.updateOne({ $push: {followers: id}})
-                    await currentUser.updateOne({ $push: {following: communityId}})
+                if (!community.followers.includes(id)){
+                    await community.updateOne({ $push: {followers: id}})
+                    await currentUser.updateOne({ $push: {communitiesFollowed: communityId}})
                     res.status(200).json(`community has been followed`);
                 } else {
                     res.status(404).json(`you already follow this community`)
@@ -210,7 +210,7 @@ const CommunityController = {
                 const currentUser = await User.findById(id)
                 if (user.followers.includes(id)){
                     await user.updateOne({ $pull: {followers: id}})
-                    await currentUser.updateOne({ $pull: {following: communityId}})
+                    await currentUser.updateOne({ $pull: {communitiesFollowed: communityId}})
                     res.status(200).json(`community has been unfollowed`);
                 } else {
                     res.status(404).json(`you do not follow this community`)

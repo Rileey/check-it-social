@@ -96,18 +96,21 @@ const ProfileController = {
 
     getFriends : async (req, res) => {
         const { profileId } = req.params;
+
         try {
             const profile = await User.findById(profileId)
             const friends = await Promise.all(
                 profile.following.map(followerId => {
                     return User.findById(followerId)
-                })
+                })  
             )
+            console.log(friends)
             let friendList = [];
             friends.map(friend => {
                 const { _id, name, profilePicture } = friend
-                friendList.push({ _id, name, profilePicture })
+                friendList.push({ _id, name, profilePicture });
             })
+            
             res.status(200).json(friendList)
         } catch (error) {
             res.status(500).json(error)
@@ -135,7 +138,7 @@ const ProfileController = {
     deleteProfile: (req, res) => {
         try {
             
-            const { profileId } = req.params
+            const { profileId } = req.query
             const deleteProfile = User.find({ _id: profileId})
             .deleteOne((err) => {
                 if (err){
