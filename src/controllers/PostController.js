@@ -56,10 +56,6 @@ const PostController = {
     getAll: (req, res) => {
         Post.find({})
         .populate({
-            path: "_creator",
-            select: "_id"
-        })
-        .populate({
             path: "_comments",
             select: "text createdAt _creator",
             match: { "isDeleted": false}
@@ -93,10 +89,7 @@ const PostController = {
         try{
         const { postId } = req.params;
         const getOnePost = await Post.findById({ _id: postId})
-        .populate({
-            path: "_creator",
-            select: " _id"
-        })
+
         
         if (getOnePost !== null) {
             res.status(200).json({getOnePost }).status('success');
