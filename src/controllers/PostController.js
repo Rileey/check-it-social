@@ -57,7 +57,7 @@ const PostController = {
         Post.find({})
         .populate({
             path: "_creator",
-            select: "name createdAt _id"
+            select: "_id"
         })
         .populate({
             path: "_comments",
@@ -95,7 +95,7 @@ const PostController = {
         const getOnePost = await Post.findById({ _id: postId})
         .populate({
             path: "_creator",
-            select: "username createdAt _id"
+            select: " _id"
         })
         
         if (getOnePost !== null) {
